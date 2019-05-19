@@ -22,7 +22,7 @@ public class WordCount {
 
         List<KeyValue> keyValues = new ArrayList<>();
         while (matcher.find())
-            keyValues.add(new KeyValue(matcher.group(), ""));
+            keyValues.add(new KeyValue(matcher.group(), null));
         return keyValues;
     }
 
