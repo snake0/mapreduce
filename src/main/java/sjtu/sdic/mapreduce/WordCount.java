@@ -18,12 +18,11 @@ public class WordCount {
 
     public static List<KeyValue> mapFunc(String file, String value) {
         String regex = "[a-zA-Z]+";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(value);
+        Matcher matcher = Pattern.compile(regex).matcher(value);
 
         List<KeyValue> keyValues = new ArrayList<>();
-        while (m.find())
-            keyValues.add(new KeyValue(m.group(), ""));
+        while (matcher.find())
+            keyValues.add(new KeyValue(matcher.group(), ""));
         return keyValues;
     }
 
