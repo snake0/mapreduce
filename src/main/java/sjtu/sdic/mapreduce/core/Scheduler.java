@@ -47,13 +47,13 @@ public class Scheduler {
 
         System.out.println(String.format("Schedule: %d %s tasks (%d I/Os)", nTasks, phase, nOther));
 
-        /**
-        // All ntasks tasks have to be scheduled on workers. Once all tasks
-        // have completed successfully, schedule() should return.
-        //
-        // Your code here (Part III, Part IV).
-        //
-        */
+        /*
+         *
+         * All ntasks tasks have to be scheduled on workers. Once all tasks
+         * have completed successfully, schedule() should return.
+         * Your code here (Part III, Part IV).
+         *
+         */
 
 
         System.out.println(String.format("Schedule: %s done", phase));

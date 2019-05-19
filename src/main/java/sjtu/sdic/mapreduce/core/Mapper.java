@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by Cachhe on 2019/4/19.
@@ -70,22 +73,19 @@ public class Mapper {
             String contents = FileUtils.readFileToString(in, "utf-8");
             List<KeyValue> keyValueList = mapF.map(inFile, contents);
 
-            ArrayList<ArrayList<KeyValue>> keyValueLists = new ArrayList<>();
-            for (int i = 0; i < nReduce; ++i) {
-                keyValueLists.add(new ArrayList<>());
-            }
+            ArrayList<ArrayList<KeyValue>> keyValueLists = IntStream.range(0, nReduce).
+                    <ArrayList<KeyValue>>mapToObj(i -> new ArrayList<>()).
+                    collect(Collectors.toCollection(ArrayList::new));
 
-            for (KeyValue kv : keyValueList) {
+            keyValueList.forEach(kv -> {
                 int r = hashCode(kv.key) % nReduce;
                 keyValueLists.get(r).add(kv);
-            }
-
+            });
             for (int i = 0; i < nReduce; ++i) {
                 FileWriter writer = new FileWriter(Utils.reduceName(jobName, mapTask, i));
                 JSON.writeJSONString(writer, JSON.toJSON(keyValueLists.get(i)));
                 writer.close();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

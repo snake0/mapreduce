@@ -64,10 +64,10 @@ public class Reducer {
                 String content = FileUtils.readFileToString(in, "utf-8");
                 List<KeyValue> keyValueList = JSONArray.parseArray(content, KeyValue.class);
 
-                for (KeyValue kv : keyValueList) {
+                keyValueList.forEach(kv -> {
                     tmp.computeIfAbsent(kv.key, k -> new ArrayList<>());
                     tmp.get(kv.key).add(kv.value);
-                }
+                });
             }
 
             TreeMap<String, String> result = new TreeMap<>();
