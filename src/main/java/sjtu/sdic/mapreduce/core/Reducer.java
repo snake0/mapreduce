@@ -70,7 +70,7 @@ public class Reducer {
                 });
             }
 
-            TreeMap<String, String> result = new TreeMap<>();
+            Map<String, String> result = new TreeMap<>();
             tmp.forEach((key, values) -> {
                 int size = values.size();
                 result.put(key, reduceF.reduce(key, values.toArray(new String[size])));

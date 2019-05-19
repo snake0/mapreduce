@@ -73,14 +73,11 @@ public class Mapper {
             String contents = FileUtils.readFileToString(in, "utf-8");
             List<KeyValue> keyValueList = mapF.map(inFile, contents);
 
-            ArrayList<ArrayList<KeyValue>> keyValueLists = IntStream.range(0, nReduce).
+            List<List<KeyValue>> keyValueLists = IntStream.range(0, nReduce).
                     <ArrayList<KeyValue>>mapToObj(i -> new ArrayList<>()).
                     collect(Collectors.toCollection(ArrayList::new));
 
-            keyValueList.forEach(kv -> {
-                int r = hashCode(kv.key) % nReduce;
-                keyValueLists.get(r).add(kv);
-            });
+            keyValueList.forEach(kv -> keyValueLists.get(hashCode(kv.key) % nReduce).add(kv));
             for (int i = 0; i < nReduce; ++i) {
                 FileWriter writer = new FileWriter(Utils.reduceName(jobName, mapTask, i));
                 JSON.writeJSONString(writer, JSON.toJSON(keyValueLists.get(i)));
