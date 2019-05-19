@@ -36,15 +36,12 @@ public class Scheduler {
     public static void schedule(String jobName, String[] mapFiles, int nReduce, JobPhase phase, Channel<String> registerChan) {
         int nTasks = -1; // number of map or reduce tasks
         int nOther = -1; // number of inputs (for reduce) or outputs (for map)
-        switch (phase) {
-            case MAP_PHASE:
-                nTasks = mapFiles.length;
-                nOther = nReduce;
-                break;
-            case REDUCE_PHASE:
-                nTasks = nReduce;
-                nOther = mapFiles.length;
-                break;
+        if (phase == JobPhase.MAP_PHASE) {
+            nTasks = mapFiles.length;
+            nOther = nReduce;
+        } else if (phase == JobPhase.REDUCE_PHASE) {
+            nTasks = nReduce;
+            nOther = mapFiles.length;
         }
 
         System.out.println(String.format("Schedule: %d %s tasks (%d I/Os)", nTasks, phase, nOther));
