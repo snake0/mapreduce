@@ -1,5 +1,6 @@
 package sjtu.sdic.mapreduce.core;
 
+import com.alipay.sofa.rpc.core.exception.SofaRpcException;
 import sjtu.sdic.mapreduce.common.Channel;
 import sjtu.sdic.mapreduce.common.DoTaskArgs;
 import sjtu.sdic.mapreduce.common.JobPhase;
@@ -59,8 +60,16 @@ public class Scheduler {
             new Thread(() -> {
                 try {
                     String address = registerChan.read();
-                    Call.getWorkerRpcService(address).doTask(
-                            new DoTaskArgs(jobName, mapFiles[finalTaskNum], phase, finalTaskNum, finalNOther));
+                    for (; ; ) {
+                        try {
+                            DoTaskArgs args = new DoTaskArgs(jobName, mapFiles[finalTaskNum], phase, finalTaskNum, finalNOther);
+                            Call.getWorkerRpcService(address).doTask(args);
+                            break;
+                        } catch (SofaRpcException e) {
+                            registerChan.write(address);
+                            address = registerChan.read();
+                        }
+                    }
                     latch.countDown();
                     registerChan.write(address);
                 } catch (InterruptedException e) {
